@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Wager</title>
+</head>
+<body>
+  <nav>
+    {% if user.is_authenticated %}
+      Привет, <a href="{% url 'profile' %}">{{ user.username }}</a>
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit">Выйти</button>
+        </form>
+    {% else %}
+      <a href="{% url 'login' %}">Вход</a> |
+      <a href="{% url 'registration' %}">Регистрация</a>
+    {% endif %}
+  </nav>
+  <hr>
+  {% block content %}
+  {% endblock %}
+</body>
+</html>

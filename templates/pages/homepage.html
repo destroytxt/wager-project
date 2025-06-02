@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Wager — Главная</title>
+</head>
+<body>
+    <h1>Добро пожаловать на Wager!</h1>
+
+    {% if user.is_authenticated %}
+        <p>Привет, <a href="{% url 'profile' %}">{{ user.username }}</a></p>
+        <p><a href="{% url 'bets:list' %}">Список пари</a></p>
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit">Выйти</button>
+        </form>
+    {% else %}
+        <p>Вы не вошли в систему.</p>
+        <p><a href="{% url 'login' %}">Войти</a> | <a href="{% url 'registration' %}">Регистрация</a></p>
+    {% endif %}
+    <p><a href="{% url 'pages:about' %}">О нас</a></p>
+    <p><a href="{% url 'pages:rules' %}">Правила</a></p>
+</body>
+</html>

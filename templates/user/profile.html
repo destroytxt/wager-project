@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Профиль {{ user.username }}</h1>
+  <p><strong>О себе:</strong> {{ user.bio }}</p>
+  <p><strong>Дата рождения:</strong> {{ user.birth_date }}</p>
+  <p>Баланс: {{ user.balance }}</p>
+  <p>Email: {{ user.email }}</p>
+  <h3>Мои пари</h3>
+  {% if bets %}
+    <ul>
+      {% for bet in bets %}
+        <li>
+          {{ bet.description }} — статус: {{ bet.status }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>У вас пока нет пари.</p>
+  {% endif %}
+  <hr>
+  <h2><a href="{% url 'bets:create_bet' %}">Новое пари</a></h2>
+  <a href="{% url 'edit_profile' %}">Редактировать профиль</a>
+  <a href="{% url 'homepage' %}">Вернуться на главную</a>
+
+{% endblock %}
