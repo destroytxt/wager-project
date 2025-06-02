@@ -1,15 +1,9 @@
 <h2>Все пари</h2>
 <ul>
   {% for bet in bets %}
-    <li>{{ bet.creator }} vs {{ bet.opponent }}
-        — {{ bet.description }} — {{ bet.amount }}
-        —
-        {% if bet.deadline %}
-          {{ bet.deadline }}
-        {% else %}
-          Пари без срока
-        {% endif %}
-        — {{ bet.status }}</li>
+    <li>
+      <a href="{% url 'bets:bet_detail' bet.id %}">Пари #{{ bet.id }}</a> — {{ bet.description }}
+    </li>
   {% endfor %}
 </ul>
 

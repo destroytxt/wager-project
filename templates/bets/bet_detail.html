@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Пари #{{ bet.id }}</h2>
+
+  <p><strong>Создатель:</strong> {{ bet.creator }}</p>
+  <p><strong>Противник:</strong> {{ bet.opponent|default:"не выбран" }}</p>
+  <p><strong>Описание:</strong> {{ bet.description }}</p>
+  <p><strong>Сумма:</strong> {{ bet.amount }}</p>
+  <p><strong>Статус:</strong> {{ bet.get_status_display }}</p>
+  <p><strong>Арбитр:</strong> {{ bet.arbiter|default:"не назначен" }}</p>
+  <p><strong>Победитель:</strong> {{ bet.winner|default:"не определён" }}</p>
+  <p><strong>Создано:</strong> {{ bet.created_at }}</p>
+  {% if bet.deadline %}
+    <p><strong>Срок пари:</strong> {{ bet.deadline }}</p>
+  {% endif %}
+  {% if user == bet.arbiter %}
+    <form action="{% url 'bets:change_status' bet.id %}" method="get" style="margin-top: 15px;">
+      <button type="submit">Изменить статус</button>
+    </form>
+  {% endif %}
+
+  <p><a href="{% url 'homepage' %}">← Назад на главную</a></p>
+{% endblock %}

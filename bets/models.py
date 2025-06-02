@@ -36,6 +36,14 @@ class Bet(models.Model):
         related_name='bets_joined',
         verbose_name='Противник'
     )
+    arbiter = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='bets_arbitrated',
+        verbose_name='Арбитр'
+    )
     description = models.TextField(verbose_name='Описание пари')
     amount = models.DecimalField(
         max_digits=10, decimal_places=1,

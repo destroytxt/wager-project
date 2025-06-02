@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Изменить статус пари #{{ bet.id }}</h2>
+  <div class="bet-summary">
+    <p><strong>Создатель:</strong> {{ bet.creator }}</p>
+    <p><strong>Противник:</strong> {{ bet.opponent|default:"—" }}</p>
+    <p><strong>Описание:</strong> {{ bet.description }}</p>
+    <p><strong>Сумма:</strong> {{ bet.amount }}</p>
+    <p><strong>Текущий статус:</strong> {{ bet.get_status_display }}</p>
+    <p><strong>Срок пари:</strong> {{ bet.deadline|date:"d.m.Y H:i" }}</p>
+  </div>
+  <hr>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+  </form>
+  <a href="{% url 'bets:list' %}">Назад к пари</a>
+{% endblock %}
