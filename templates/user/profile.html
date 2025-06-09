@@ -11,7 +11,9 @@
     <ul>
       {% for bet in bets %}
         <li>
-          {{ bet.description }} — статус: {{ bet.status }}
+          <a href="{% url 'bets:bet_detail' bet.id %}">
+            {{ bet.description }} — статус: {{ bet.status }}
+          </a>
         </li>
       {% endfor %}
     </ul>
@@ -20,6 +22,7 @@
   {% endif %}
   <hr>
   <h2><a href="{% url 'bets:create_bet' %}">Новое пари</a></h2>
+  <h2><a href="{% url 'bets:list' %}">Посмотреть список пари</a></h2>
   <a href="{% url 'edit_profile' %}">Редактировать профиль</a>
   <a href="{% url 'homepage' %}">Вернуться на главную</a>
 

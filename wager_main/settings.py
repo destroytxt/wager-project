@@ -11,7 +11,11 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-fallback-secret")
 
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(',')
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'www.destroytxt.pythonanywhere.com',
+    'destroytxt.pythonanywhere.com',
+]
 
 # Приложения
 INSTALLED_APPS = [

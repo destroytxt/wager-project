@@ -1,5 +1,10 @@
-# Environment
+# Environments
 venv/
 env/
-.vevn/
-*.env
+ENV/
+.venv/
+.ENV/
+
+# VSCode / IDEs
+.vscode/
+.idea/

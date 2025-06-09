@@ -19,6 +19,12 @@
       <button type="submit">Изменить статус</button>
     </form>
   {% endif %}
+  {% if request.user != bet.creator and not bet.opponent and bet.status == 'open' %}
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Принять пари</button>
+  </form>
+  {% endif %}
 
   <p><a href="{% url 'homepage' %}">← Назад на главную</a></p>
 {% endblock %}

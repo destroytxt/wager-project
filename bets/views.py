@@ -8,16 +8,20 @@ from .models import Bet, User
 @login_required
 def create_bet(request):
     if request.method == 'POST':
-        form = BetForm(request.POST)
+        form = BetForm(request.POST, user=request.user)
         if form.is_valid():
             bet = form.save(commit=False)
             bet.creator = request.user
             if not bet.arbiter:
                 bet.arbiter = User.objects.filter(is_superuser=True).first()
-            bet.save()
-            return redirect('bets:list')
+            if bet.arbiter in (bet.creator, bet.opponent):
+                form.add_error(
+                    'arbiter', 'Арбитр не может быть участником пари.')
+            else:
+                bet.save()
+                return redirect('bets:list')
     else:
-        form = BetForm()
+        form = BetForm(user=request.user)
     return render(request, 'bets/create_bet.html', {'form': form})
 
 
@@ -44,6 +48,15 @@ def bet_list(request):
 
 def bet_detail(request, bet_id):
     bet = get_object_or_404(Bet, id=bet_id)
+    if (
+        request.method == 'POST'
+        and bet.opponent is None
+        and bet.creator != request.user
+        and bet.status == 'open'
+    ):
+        bet.opponent = request.user
+        bet.save()
+        return redirect('bets:bet_detail', bet_id=bet.id)
     return render(request, 'bets/bet_detail.html', {'bet': bet})
 
 
@@ -60,7 +73,7 @@ def profile_view(request):
             bet.save()
             return redirect('profile')
     else:
-        form = BetForm()
+        form = BetForm(user=request.user)
     context = {
         'user': user,
         'bets': user_bets,

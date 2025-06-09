@@ -4,3 +4,29 @@
   {{ form.as_p }}
   <button type="submit">Создать пари</button>
 </form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const opponentSelect = document.getElementById("id_opponent");
+    const arbiterSelect = document.getElementById("id_arbiter");
+    const currentUserId = "{{ request.user.id }}";
+    const originalArbiterOptions = Array.from(arbiterSelect.options).map(opt => ({
+        value: opt.value,
+        text: opt.text,
+    }));
+    function updateArbiterOptions() {
+        const opponentId = opponentSelect.value;
+        arbiterSelect.innerHTML = "";
+        for (const opt of originalArbiterOptions) {
+            if (opt.value !== opponentId && opt.value !== currentUserId) {
+                const newOption = document.createElement("option");
+                newOption.value = opt.value;
+                newOption.text = opt.text;
+                arbiterSelect.appendChild(newOption);
+            }
+        }
+    }
+    opponentSelect.addEventListener("change", updateArbiterOptions);
+    updateArbiterOptions();
+});
+</script>
