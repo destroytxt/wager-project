@@ -7,7 +7,8 @@
 <body>
     <h1>Добро пожаловать на Wager!</h1>
     {% if user.is_authenticated %}
-        <p>Привет, <a href="{% url 'profile' %}">{{ user.username }}</a></p>
+        <p>Привет, <a href="{% url 'profile' %}">{{ user.username }}</a>!</p>
+        <p><a href="{% url 'profile' %}">Мой профиль</a></p>
         <p><a href="{% url 'bets:list' %}">Список пари</a></p>
         <p><a href="{% url 'bets:create_bet' %}">Создать пари</a></p>
         <form method="post" action="{% url 'logout' %}">

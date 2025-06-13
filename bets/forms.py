@@ -4,6 +4,10 @@ from django.utils import timezone
 from .models import Bet, User
 
 
+class AcceptBetForm(forms.Form):
+    pass
+
+
 class BetForm(forms.ModelForm):
     class Meta:
         model = Bet
@@ -28,8 +32,8 @@ class BetForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        if cleaned_data.get("opponent") == self.user:
-            self.add_error("opponent", "Нельзя заключать пари с самим собой.")
+        if cleaned_data.get('opponent') == self.user:
+            self.add_error('opponent', "Нельзя заключать пари с самим собой.")
 
 
 class BetStatusForm(forms.ModelForm):
@@ -43,7 +47,7 @@ class BetStatusForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        allowed_statuses = ('finished', 'cancelled', 'declined')
+        allowed_statuses = ('finished', 'cancelled')
         self.fields['status'].choices = [
             choice for choice in self.fields['status'].choices
             if choice[0] in allowed_statuses
@@ -59,11 +63,15 @@ class BetStatusForm(forms.ModelForm):
         status = cleaned_data.get('status')
         winner = cleaned_data.get('winner')
         if status == 'finished' and not winner:
-            self.add_error('winner', 'Если пари завершено,'
-                                     ' необходимо указать победителя.')
+            raise forms.ValidationError(
+                'Если пари завершено, необходимо указать победителя.')
+        if self.instance.arbiter_has_changed_status:
+            raise forms.ValidationError(
+                'Арбитр уже менял статус пари и не может сделать это снова.')
 
 
 class UserForm(forms.ModelForm):
+    balance = forms.DecimalField(disabled=True, required=False, label='Баланс')
     birth_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}),
         label='Дата рождения'
@@ -75,8 +83,8 @@ class UserForm(forms.ModelForm):
             'username',
             'first_name',
             'last_name',
-            'balance',
             'bio',
             'birth_date',
             'email',
+            'balance'
         )

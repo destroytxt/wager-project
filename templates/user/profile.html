@@ -6,7 +6,7 @@
   <p><strong>Дата рождения:</strong> {{ user.birth_date }}</p>
   <p>Баланс: {{ user.balance }}</p>
   <p>Email: {{ user.email }}</p>
-  <h3>Мои пари</h3>
+  <h3>Все мои пари:</h3>
   {% if bets %}
     <ul>
       {% for bet in bets %}
@@ -18,9 +18,37 @@
       {% endfor %}
     </ul>
   {% else %}
-    <p>У вас пока нет пари.</p>
+    <p>У вас пока нет пари</p>
   {% endif %}
   <hr>
+    <h3>Вам брошен вызов:</h3>
+  {% if challenge_thrown_bets %}
+    <ul>
+      {% for bet in challenge_thrown_bets %}
+        <li>
+          <a href="{% url 'bets:bet_detail' bet.id %}">
+            {{ bet.description }} — статус: {{ bet.status }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>У вас пока нет вызовов</p>
+  {% endif %}
+  <hr>
+  <h3>Вы арбитр в этих пари:</h3>
+  <ul>
+    {% for bet in arbitrated_bets %}
+      <li>
+        <a href="{% url 'bets:bet_detail' bet.id %}">
+        Пари между {{ bet.creator.username }} и {{ bet.opponent.username }} —
+        сумма: {{ bet.amount }} — статус: {{ bet.status }}
+        </a>
+      </li>
+    {% empty %}
+      <li>Вы пока не назначены арбитром ни в одном пари.</li>
+    {% endfor %}
+</ul>
   <h2><a href="{% url 'bets:create_bet' %}">Новое пари</a></h2>
   <h2><a href="{% url 'bets:list' %}">Посмотреть список пари</a></h2>
   <a href="{% url 'edit_profile' %}">Редактировать профиль</a>

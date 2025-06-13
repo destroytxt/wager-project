@@ -12,19 +12,19 @@
   <p><strong>Победитель:</strong> {{ bet.winner|default:"не определён" }}</p>
   <p><strong>Создано:</strong> {{ bet.created_at }}</p>
   {% if bet.deadline %}
-    <p><strong>Срок пари:</strong> {{ bet.deadline }}</p>
+    <p><strong>Срок пари до:</strong> {{ bet.deadline }}</p>
   {% endif %}
-  {% if user == bet.arbiter %}
+  {% if user == bet.arbiter and not bet.arbiter_has_changed_status %}
     <form action="{% url 'bets:change_status' bet.id %}" method="get" style="margin-top: 15px;">
       <button type="submit">Изменить статус</button>
     </form>
   {% endif %}
-  {% if request.user != bet.creator and not bet.opponent and bet.status == 'open' %}
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit">Принять пари</button>
+  {% if user.is_authenticated and request.user != bet.creator and bet.status == 'open' and user != bet.arbiter%}
+    <a href="{% url 'bets:accept_bet' bet.id %}" style="display: inline-block; padding: 8px 16px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px;">
+      Принять пари
+    </a>
   </form>
   {% endif %}
-
-  <p><a href="{% url 'homepage' %}">← Назад на главную</a></p>
+  <p><a href="{% url 'profile' %}">Вернуться в профиль</a></p>
+  <p><a href="{% url 'homepage' %}">Назад на главную</a></p>
 {% endblock %}

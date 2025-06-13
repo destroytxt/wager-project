@@ -1,9 +1,9 @@
 import os
 from pathlib import Path
 from datetime import timedelta
-from dotenv import load_dotenv
-
-load_dotenv()  # Подгружаем переменные из .env
+# from dotenv import load_dotenv
+#
+# load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -17,7 +17,6 @@ ALLOWED_HOSTS = [
     'destroytxt.pythonanywhere.com',
 ]
 
-# Приложения
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -48,7 +47,7 @@ ROOT_URLCONF = 'wager_main.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # если нужны шаблоны
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

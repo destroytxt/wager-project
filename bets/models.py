@@ -3,13 +3,13 @@ from django.db import models
 
 
 class User(AbstractUser):
-    bio = models.TextField(blank=True, null=True)
+    bio = models.TextField(blank=True, null=True, verbose_name='О себе')
     birth_date = models.DateField(blank=True, null=True)
     balance = models.DecimalField(
         max_digits=10,
         decimal_places=1,
-        default=0,
-        verbose_name='Баланс'
+        default=1000,
+        verbose_name='Баланс',
     )
 
     def __str__(self):
@@ -36,6 +36,7 @@ class Bet(models.Model):
         related_name='bets_joined',
         verbose_name='Противник'
     )
+    opponent_accepted = models.BooleanField(default=False)
     arbiter = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
@@ -53,6 +54,7 @@ class Bet(models.Model):
         max_length=10, choices=STATUS_CHOICES,
         default='open', verbose_name='Статус'
     )
+    arbiter_has_changed_status = models.BooleanField(default=False)
     winner = models.ForeignKey(
         User, on_delete=models.SET_NULL,
         null=True, blank=True,

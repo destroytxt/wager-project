@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Принять пари{% endblock %}
+
+{% block content %}
+<h1>Подтверждение участия</h1>
+<p>Вы собираетесь принять участие в пари на сумму <strong>{{ bet.amount }}</strong>.</p>
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  {{ form.confirm }}
+  <button type="submit">Принять вызов</button>
+  <a href="{% url 'bets:bet_detail' bet.id %}">Отмена</a>
+</form>
+{% endblock %}
