@@ -50,6 +50,7 @@ def accept_bet(request, bet_id):
                 request.user.save()
                 bet.opponent_accepted = True
                 bet.status = 'accepted'
+                bet.opponent = request.user
                 bet.save()
                 return redirect('bets:bet_detail', bet.id)
     return render(request, 'bets/accept_bet.html', {'form': form, 'bet': bet})
