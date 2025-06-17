@@ -2,6 +2,7 @@ import copy
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic import ListView
 
 from .forms import AcceptBetForm, BetForm, BetStatusForm, UserForm
 from .models import Bet, User
@@ -16,6 +17,9 @@ def create_bet(request):
             bet.creator = request.user
             if not bet.arbiter:
                 bet.arbiter = User.objects.filter(is_superuser=True).first()
+            if not bet.arbiter:
+                form.add_error(
+                    'arbiter', 'Без арбитра невозможно заключить пари.')
             if bet.arbiter in (bet.creator, bet.opponent):
                 form.add_error(
                     'arbiter', 'Арбитр не может быть участником пари.')
@@ -60,14 +64,17 @@ def accept_bet(request, bet_id):
 def change_bet_status(request, bet_id):
     bet = get_object_or_404(Bet, id=bet_id)
     if request.user != bet.arbiter:
-        return render(request, '403.html', status=403)
+        return render(request, 'pages/403.html', status=403)
     if request.method == 'POST':
         form = BetStatusForm(request.POST, instance=copy.copy(bet))
         if form.is_valid():
             cleaned = form.cleaned_data
             bet.status = cleaned['status']
             bet.winner = cleaned.get('winner')
-            if bet.status == 'finished' and bet.winner:
+            if bet.status == 'finished' and not bet.opponent:
+                bet.winner.balance += bet.amount
+                bet.winner.save()
+            elif bet.status == 'finished' and bet.winner and bet.opponent:
                 total_amount = bet.amount * 2
                 bet.winner.balance += total_amount
                 bet.winner.save()
@@ -87,9 +94,25 @@ def change_bet_status(request, bet_id):
                   {'form': form, 'bet': bet})
 
 
-def bet_list(request):
-    bets = Bet.objects.all()
-    return render(request, 'bets/bet_list.html', {'bets': bets})
+class BetListView(ListView):
+    model = Bet
+    template_name = 'bets/bet_list.html'
+    context_object_name = 'bets'
+    paginate_by = 30
+
+    def get_queryset(self):
+        status = self.request.GET.get('status', 'open')
+        if status == 'all':
+            return Bet.objects.all()
+        return Bet.objects.filter(status=status)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_status'] = self.request.GET.get('status', 'open')
+        context['status_choices'] = {
+            'all': 'Все пари', **dict(Bet.STATUS_CHOICES)
+        }
+        return context
 
 
 def bet_detail(request, bet_id):

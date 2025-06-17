@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import (accept_bet,
+from .views import (BetListView,
+                    accept_bet,
                     bet_detail,
-                    bet_list,
                     change_bet_status,
                     create_bet)
 
@@ -9,7 +9,7 @@ from .views import (accept_bet,
 app_name = 'bets'
 
 urlpatterns = [
-    path('', bet_list, name='list'),
+    path('', BetListView.as_view(), name='list'),
     path('create/', create_bet, name='create_bet'),
     path('bet/<int:bet_id>/accept/', accept_bet, name='accept_bet'),
     path('bet/<int:bet_id>/', bet_detail, name='bet_detail'),

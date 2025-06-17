@@ -1,4 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h2>Все пари</h2>
+<form method="get" style="margin-bottom: 1em;">
+  <label for="status">Фильтр по статусу:</label>
+  <select name="status" id="status" onchange="this.form.submit()">
+    {% for key, label in status_choices.items %}
+      <option value="{{ key }}" {% if current_status == key %}selected{% endif %}>
+        {{ label }}
+      </option>
+    {% endfor %}
+  </select>
+</form>
 <ul>
   {% for bet in bets %}
     <li>
@@ -6,5 +20,16 @@
     </li>
   {% endfor %}
 </ul>
-
+<div class="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?status={{ current_status }}&page=1">Первая</a>
+    <a href="?status={{ current_status }}&page={{ page_obj.previous_page_number }}">Назад</a>
+  {% endif %}
+  <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+    <a href="?status={{ current_status }}&page={{ page_obj.next_page_number }}">Вперёд</a>
+    <a href="?status={{ current_status }}&page={{ page_obj.paginator.num_pages }}">Последняя</a>
+  {% endif %}
+</div>
 <a href="{% url 'homepage' %}">Вернуться на главную</a>
+{% endblock %}
